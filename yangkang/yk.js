@@ -109,3 +109,8 @@ async function GM_request(url, options = {}) {
 // }).catch(error => {
 //     console.error(`请求失败：${error.message}`);
 // });
+
+
+function yangkang(data){
+    console.log("******* 杨康的油猴工具类嘿嘿，好用好用 *****" + data)
+}
