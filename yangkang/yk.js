@@ -111,6 +111,57 @@ async function GM_request(url, options = {}) {
 // });
 
 
-function yangkang(data){
+function yangkang(data) {
     console.log("******* 杨康的油猴工具类嘿嘿，好用好用 *****" + data)
 }
+
+
+// 分组函数
+// 这个函数接受三个参数：原始数组、用于分组的字段（可以是字符串或字符串数组），以及需要求和的字段（可选）。
+// 它会遍历原始数组中的每个对象，并将其添加到对应的分组中。
+// 如果指定了求和字段，则该字段的值将被累加到该分组的 “sum” 属性中，并且返回的分组对象将包含该属性。
+function groupBy(array, keys, sumKey = null) {
+    const grouped = {};
+    for (const object of array) {
+        let key = '';
+        if (Array.isArray(keys)) {
+            for (const k of keys) {
+                key += object[k];
+            }
+        } else {
+            key = object[keys];
+        }
+        if (!grouped.hasOwnProperty(key)) {
+            grouped[key] = { sum: 0, values: [] };
+        }
+        if (sumKey && object[sumKey]) {
+            grouped[key].sum += parseFloat(object[sumKey]);
+        }
+        grouped[key].values.push(object);
+    }
+    return Object.values(grouped);
+}
+
+// 例如，如果使用以下数据调用该函数：
+// const data = [
+//     { name: 'Alice', city: 'New York', revenue: '100.50' },
+//     { name: 'Bob', city: 'New York', revenue: '200.75' },
+//     { name: 'Charlie', city: 'San Francisco', revenue: '150.25' },
+//     { name: 'Dave', city: 'San Francisco', revenue: '75.00' },
+//     { name: 'Eve', city: 'New York', revenue: '50.00' }
+// ];
+
+// const groupedData = groupBy(data, ['city'], 'revenue');
+// console.log(groupedData);
+// 控制台打印结果
+// [
+//     { "sum": 351.25, "values": [
+//       { "name": "Alice", "city": "New York", "revenue": "100.50" },
+//       { "name": "Bob", "city": "New York", "revenue": "200.75" },
+//       { "name": "Eve", "city": "New York", "revenue": "50.00" }
+//     ]},
+//     { "sum": 225.25, "values": [
+//       { "name": "Charlie", "city": "San Francisco", "revenue": "150.25" },
+//       { "name": "Dave", "city": "San Francisco", "revenue": "75.00" }
+//     ]}
+//   ]
