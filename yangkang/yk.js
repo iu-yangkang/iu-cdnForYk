@@ -179,9 +179,9 @@ async function sleep(num) {
         }, num)
     })
 }
-console.log("123")
-await sleep(5000)
-console.log("456")
+// console.log("123")
+// await sleep(5000)
+// console.log("456")
 
 
 // -------------------
