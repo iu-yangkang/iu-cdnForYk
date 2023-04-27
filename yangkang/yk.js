@@ -1,9 +1,11 @@
 
-console.log("******* 杨康的油猴工具类已经生效,请尽情享用 *******")
-console.log("******* 杨康的油猴工具类已经生效,请尽情享用 *******")
-console.log("******* 杨康的油猴工具类已经生效,请尽情享用 *******")
-console.log("******* 重要的事情说3遍！！！！！！！！！！ *******")
-console.log("******* GM_request函数 封装了油猴 的GM_xmlhttpRequest方法, 可以在当前页面执行跨域请求,支持异步调用，返回 Promise *******")
+let message =
+    `
+******* 杨康的油猴工具类已经生效,请尽情享用 *******
+******* 版本号：yangkang2.1 *******
+******* GM_request函数 封装了油猴 的GM_xmlhttpRequest方法, 可以在当前页面执行跨域请求,支持异步调用，返回 Promise *******
+`
+console.log(message)
 /**
  * 封装GM_xmlhttpRequest方法
  * @param {string} url 请求URL
@@ -112,56 +114,172 @@ async function GM_request(url, options = {}) {
 
 
 function yangkang(data) {
-    console.log("******* 杨康的油猴工具类嘿嘿，好用好用 *****" + data)
+    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^')
+    console.log(data)
+    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 }
 
 
-// 分组函数
-// 这个函数接受三个参数：原始数组、用于分组的字段（可以是字符串或字符串数组），以及需要求和的字段（可选）。
-// 它会遍历原始数组中的每个对象，并将其添加到对应的分组中。
-// 如果指定了求和字段，则该字段的值将被累加到该分组的 “sum” 属性中，并且返回的分组对象将包含该属性。
-function groupBy(array, keys, sumKey = null) {
-    const grouped = {};
-    for (const object of array) {
-        let key = '';
-        if (Array.isArray(keys)) {
-            for (const k of keys) {
-                key += object[k];
+/**
+ * 分组函数，根据键或键数组对输入数组进行分组，并可计算值的总和。
+ * @param {Array} array 要分组的数组
+ * @param {string|Array} keys 用于分组的键，可以是单个键的字符串，也可以是多个键的数组
+ * @param {Array} sumKeys 需要计算总和的键的数组，默认为空数组
+ * @returns {Array} 返回包含所有分组结果的数组
+ */
+async function groupBy(array, keys, sumKeys = []) {
+    const grouped = {}; // 用于存储分组结果的对象
+    for (const object of array) { // 遍历输入数组中的每个元素
+        let key = ''; // 存储当前元素的键的变量
+        if (Array.isArray(keys)) { // 如果传入的keys是数组
+            for (const k of keys) { // 遍历keys数组
+                key += object[k]; // 将每个键的值拼接起来作为当前元素的键
             }
-        } else {
-            key = object[keys];
+        } else { // 如果传入的keys是单个键的字符串
+            key = object[keys]; // 使用该键的值作为当前元素的键
         }
-        if (!grouped.hasOwnProperty(key)) {
-            grouped[key] = { sum: 0, values: [] };
+        if (!grouped.hasOwnProperty(key)) { // 如果当前键不存在于grouped对象中
+            grouped[key] = { // 在grouped对象中新建一个以该键为名的属性
+                values: [], // 存储属于该分组的所有元素
+                group: key, // 当前分组的名称，用于作为返回结果中的一个属性
+                total: 0, // 属于该分组的元素数量
+                ...sumKeys.reduce((acc, curr) => ({ ...acc, [curr]: 0 }), {}), // 对需要计算总和的键进行初始化，设置初始值为0
+            };
         }
-        if (sumKey && object[sumKey]) {
-            grouped[key].sum += parseFloat(object[sumKey]);
-        }
-        grouped[key].values.push(object);
+        sumKeys.forEach((k) => { // 遍历需要计算总和的键
+            if (object[k]) { // 如果当前元素包含该键
+                grouped[key][k] += parseFloat(object[k]); // 将该键的值加到该分组对应的属性上
+            }
+        });
+        grouped[key].total++; // 增加属于该分组的元素数量
+        grouped[key].values.push(object); // 将当前元素添加到属于该分组的所有元素数组中
+        grouped[key].group = keys ? keys.map(k => object[k]).join('-') : key; // 更新分组名称（如果keys是一个数组，使用每个键的值拼接而成）
     }
-    return Object.values(grouped);
+    return Object.values(grouped); // 返回所有分组结果的数组
 }
 
 // 例如，如果使用以下数据调用该函数：
 // const data = [
-//     { name: 'Alice', city: 'New York', revenue: '100.50' },
-//     { name: 'Bob', city: 'New York', revenue: '200.75' },
-//     { name: 'Charlie', city: 'San Francisco', revenue: '150.25' },
-//     { name: 'Dave', city: 'San Francisco', revenue: '75.00' },
-//     { name: 'Eve', city: 'New York', revenue: '50.00' }
+//     { name: 'Bob', city: 'New York', revenue: '100.50',a:30.6 },
+//     { name: 'Bob', city: 'New York', revenue: '200.75' ,a:30.5 },
+//     { name: 'Charlie', city: 'San Francisco', revenue: '150.25',a:30.4  },
+//     { name: 'Dave', city: 'San Francisco', revenue: '75.00',a:30.3  },
+//     { name: 'Eve', city: 'New York', revenue: '50.00',a:30.2  }
 // ];
-
-// const groupedData = groupBy(data, ['city'], 'revenue');
+// const groupedData = groupBy(data, ['name','city'], 'revenue','a');
 // console.log(groupedData);
-// 控制台打印结果
-// [
-//     { "sum": 351.25, "values": [
-//       { "name": "Alice", "city": "New York", "revenue": "100.50" },
-//       { "name": "Bob", "city": "New York", "revenue": "200.75" },
-//       { "name": "Eve", "city": "New York", "revenue": "50.00" }
-//     ]},
-//     { "sum": 225.25, "values": [
-//       { "name": "Charlie", "city": "San Francisco", "revenue": "150.25" },
-//       { "name": "Dave", "city": "San Francisco", "revenue": "75.00" }
-//     ]}
-//   ]
+
+
+// ----------------------------------
+
+async function sleep(num) {
+    return new Promise((resolve, reject) => { // return / await 等待执行完
+        setTimeout(() => {
+            resolve('延迟')
+        }, num)
+    })
+}
+console.log("123")
+await sleep(5000)
+console.log("456")
+
+
+// -------------------
+/**
+ * layui注入
+ * addCdnByLayui 在文件加载的时候，应该默认加载，后期直接调用
+ */
+function addCdnByLayui() {
+    var link = document.createElement('link');
+    link.href = "//unpkg.com/layui@2.6.8/dist/css/layui.css";
+    link.rel = 'stylesheet';
+    document.getElementsByTagName('head')[0].appendChild(link);
+    var script = document.createElement('script');
+    script.src = "//unpkg.com/layui@2.6.8/dist/layui.js";
+    document.getElementsByTagName('head')[0].appendChild(script);
+    yangkang("layui@2.6.8 注入完成，可放心使用！")
+}
+// 直接调用
+addCdnByLayui()
+
+/**
+ * 页面新增功能按钮
+*
+*/
+
+function addButton(title, className, onclick, top) {
+    let style =
+        `
+   position:absolute; 
+   left:35px; top:100px;
+   `
+    let Container = document.createElement('div');
+    Container.id = "sp-ac-container";
+    Container.style.position = "fixed"
+    Container.style.left = "220px"
+    Container.style.top = `${top}`
+    Container.style['z-index'] = "999999"
+    Container.innerHTML = ` <button id="myCustomize" class="${className}" style="${style}" onclick="${onclick}">${title}</button>`
+    document.body.appendChild(Container);
+}
+
+
+// 在页面上添加表格table
+function addTable(theadDatas, tbodyDatas, box) {
+    // 模拟数据
+    // 表头数据
+    // var theadDatas = ['姓名', '性别', '年龄'];
+    // // tbody数据
+    // var tbodyDatas = [
+    //     { name: 'xm', sex: '男', age: 20 },
+    //     { name: 'hh', sex: '女', age: 18 },
+    //     { name: 'lh', sex: '男', age: 21 },
+    //     { name: 'ghx', sex: '女', age: 23 }
+    // ];
+    // 创建table
+    var table = document.createElement('table');
+    table.border = '1px';
+    table.style.textAlign = 'center';
+    box.appendChild(table);
+    // 创建thead
+    var thead = document.createElement('thead');
+    table.appendChild(thead);
+    // 创建thead中的tr
+    var tr = document.createElement('tr');
+    tr.style.height = '40px';
+    tr.style.backgroundColor = 'lightblue';
+    thead.appendChild(tr);
+    // 创建thead中的th
+    for (var i = 0; i < theadDatas.length; i++) {
+        var th = document.createElement('th');
+        th.style.padding = '5px 20px';
+        // th.innerText = theadDatas[i];
+        // 使用common.js中的innerText兼容性处理函数
+        setInnerText(th, theadDatas[i]);
+        tr.appendChild(th);
+    }
+    // 创建tbody
+    var tbody = document.createElement('tbody');
+    table.appendChild(tbody);
+    // 创建tbody中的tr td
+    for (var i = 0; i < tbodyDatas.length; i++) {
+        // 创建tbody中的tr
+        tr = document.createElement('tr');
+        tbody.appendChild(tr);
+        // 创建tbody中的td
+        var tdData = tbodyDatas[i];
+        for (var key in tdData) {
+            var td = document.createElement('td');
+            setInnerText(td, tdData[key]);
+            tr.appendChild(td);
+        }
+        // 创建td中的删除链接
+        // td = document.createElement('td');
+        // tr.appendChild(td);
+        // var link = document.createElement('a');
+        // link.href = 'javascript:void(0)';
+        // setInnerText(link, '删除');
+        // td.appendChild(link);
+        // link.onclick = removeTr;
+    }
+}
