@@ -2,7 +2,7 @@
 let message =
     `
 ******* 杨康的油猴工具类已经生效,请尽情享用 *******
-******* 版本号：yangkang2.1 *******
+******* 版本号：yangkang2.3 *******
 ******* GM_request函数 封装了油猴 的GM_xmlhttpRequest方法, 可以在当前页面执行跨域请求,支持异步调用，返回 Promise *******
 `
 console.log(message)
@@ -72,8 +72,6 @@ async function GM_request(url, options = {}) {
         }
     });
 }
-
-
 //   GM_request 这个函数接受一个url和一个options对象作为参数。options对象具有以下属性：
 //   data(可选)：请求数据，默认为空。
 //   method(可选)：请求方法，默认为GET。
@@ -113,10 +111,24 @@ async function GM_request(url, options = {}) {
 // });
 
 
+/**
+ * 标记打印
+ * @param {*} data
+ */
 function yangkang(data) {
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    console.log(data)
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^')
+
+    let da = `
+    **************************
+
+
+    ${data}
+
+
+    **************************
+    `
+
+    console.log(da)
+    
 }
 
 
@@ -172,6 +184,11 @@ async function groupBy(array, keys, sumKeys = []) {
 
 // ----------------------------------
 
+
+/**
+ * 睡眠函数
+ * @param {*} num
+ */
 async function sleep(num) {
     return new Promise((resolve, reject) => { // return / await 等待执行完
         setTimeout(() => {
@@ -185,6 +202,8 @@ async function sleep(num) {
 
 
 // -------------------
+
+
 /**
  * layui注入
  * addCdnByLayui 在文件加载的时候，应该默认加载，后期直接调用
@@ -202,11 +221,43 @@ function addCdnByLayui() {
 // 直接调用
 addCdnByLayui()
 
+
+
+
+/**
+ * 以下是一个使用 JavaScript 封装的 CDN 加载参数的示例代码，支持加载 CSS 和 JS 文件：
+ * @param {*} filename 文件链接
+ * @param {*} filetype 文件类型
+ */
+function loadCDNFile(filename, filetype) {
+  if (filetype == "js") { // 如果是加载 JS 文件
+    var fileref = document.createElement('script');
+    fileref.setAttribute("type", "text/javascript");
+    fileref.setAttribute("src", filename);
+  }
+  else if (filetype == "css") { // 如果是加载 CSS 文件
+    var fileref = document.createElement("link");
+    fileref.setAttribute("rel", "stylesheet");
+    fileref.setAttribute("type", "text/css");
+    fileref.setAttribute("href", filename);
+  }
+
+  if (typeof fileref != "undefined") {
+    document.getElementsByTagName("head")[0].appendChild(fileref);
+  }
+}
+
+// loadCDNFile("https://code.jquery.com/jquery-3.6.0.min.js", "js");
+
+
+
 /**
  * 页面新增功能按钮
-*
-*/
-
+ * @param {*} title
+ * @param {*} className
+ * @param {*} onclick
+ * @param {*} top
+ */
 function addButton(title, className, onclick, top) {
     let style =
         `
@@ -224,7 +275,14 @@ function addButton(title, className, onclick, top) {
 }
 
 
-// 在页面上添加表格table
+
+/**
+ * 在页面上添加表格table
+ * @param {*} theadDatas 表头数据
+ * @param {*} tbodyDatas tbody数据
+ * @param {*} box dom元素
+ * @returns
+ */
 function addTable(theadDatas, tbodyDatas, box) {
     // 模拟数据
     // 表头数据
@@ -283,3 +341,59 @@ function addTable(theadDatas, tbodyDatas, box) {
         // link.onclick = removeTr;
     }
 }
+
+
+/**
+ * 根据该属性排序；rev：升序1或降序-1，不填则默认为1
+ * @param {*} attr
+ * @param {*} rev
+ * @returns
+ */
+function sortBy(attr, rev) {
+    if (rev == undefined) { rev = 1 } else { (rev) ? 1 : -1; }
+    return function (a, b) {
+        a = a[attr];
+        b = b[attr];
+        if (a < b) { return rev * -1 }
+        if (a > b) { return rev * 1 }
+        return 0;
+    }
+}
+
+
+
+/**
+ * Axios请求封装
+ * 以上代码中，request 函数接收三个参数，分别为请求方法、请求 URL 和配置项。配置项包括请求头部信息 headers、查询参数 params 和请求体数据 data。
+ * 当请求方法为 get 时，将查询参数 params 添加到请求配置对象 config 中；否则将请求体数据 data 添加到 config 对象中，并且将请求方法改为 post，以便发送带有请求体的请求。
+ * 最后，该函数返回一个 Promise，可以异步调用并处理请求结果。
+ * 使用示例中分别演示了发起 GET 请求和 POST 请求的用法。GET 请求的查询参数使用了 { limit: 10, offset: 0 } 这个 JSON 对象，而 POST 请求的请求体数据使用了 { name: 'John Doe', age: 30 } 这个 JSON 对象，并且指定了请求头部信息 'Content-Type': 'application/json'。
+ * @param {*} method
+ * @param {*} url
+ * @param {*} params
+ * @returns
+ */
+async function Axios_request(method, url, { headers, params, data }) {
+    const config = {
+        method,
+        url,
+        headers,
+    };
+
+    if (method === 'get') {
+        config.params = params;
+    } else {
+        config.data = data;
+    }
+
+    return axios(config);
+}
+
+    //   // 使用示例：
+    //   request('get', '/api/users', { params: { limit: 10, offset: 0 } })
+    //     .then(response => console.log(response))
+    //     .catch(error => console.error(error));
+
+    //   request('post', '/api/users', { data: { name: 'John Doe', age: 30 }, headers: { 'Content-Type': 'application/json' } })
+    //     .then(response => console.log(response))
+    //     .catch(error => console.error(error));
