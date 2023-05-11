@@ -2,7 +2,7 @@
 let message =
     `
 ******* 杨康的油猴工具类已经生效,请尽情享用 *******
-******* 版本号：yangkang2.3 *******
+******* 版本号：yangkang2.4 *******
 ******* GM_request函数 封装了油猴 的GM_xmlhttpRequest方法, 可以在当前页面执行跨域请求,支持异步调用，返回 Promise *******
 `
 console.log(message)
@@ -139,7 +139,7 @@ function yangkang(data) {
  * @param {Array} sumKeys 需要计算总和的键的数组，默认为空数组
  * @returns {Array} 返回包含所有分组结果的数组
  */
-async function groupBy(array, keys, sumKeys = []) {
+async function groupBy(array, keys, sumKeys = [],join) {
     const grouped = {}; // 用于存储分组结果的对象
     for (const object of array) { // 遍历输入数组中的每个元素
         let key = ''; // 存储当前元素的键的变量
@@ -165,7 +165,7 @@ async function groupBy(array, keys, sumKeys = []) {
         });
         grouped[key].total++; // 增加属于该分组的元素数量
         grouped[key].values.push(object); // 将当前元素添加到属于该分组的所有元素数组中
-        grouped[key].group = keys ? keys.map(k => object[k]).join('-') : key; // 更新分组名称（如果keys是一个数组，使用每个键的值拼接而成）
+        grouped[key].group = keys ? keys.map(k => object[k]).join(join) : key; // 更新分组名称（如果keys是一个数组，使用每个键的值拼接而成）
     }
     return Object.values(grouped); // 返回所有分组结果的数组
 }
