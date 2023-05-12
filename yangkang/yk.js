@@ -1,6 +1,6 @@
 
 let message =
-`
+    `
 ******* 杨康的油猴工具类已经生效,请尽情享用 *******
 ******* 版本号：yangkang2.6 *******
 ******* GM_request函数 封装了油猴 的GM_xmlhttpRequest方法, 可以在当前页面执行跨域请求,支持异步调用，返回 Promise *******
@@ -291,6 +291,8 @@ function addButton(title, className, onclick, top) {
 
 
 
+
+
 /**
  * 在页面上添加表格table
  * @param {*} theadDatas 表头数据
@@ -354,6 +356,18 @@ function addTable(theadDatas, tbodyDatas, box) {
         // setInnerText(link, '删除');
         // td.appendChild(link);
         // link.onclick = removeTr;
+    }
+}
+
+
+
+// common.js
+// innerText textContent 兼容性处理
+function setInnerText(element, content) {
+    if (typeof element.innerText === 'string') {
+        element.innerText = content;
+    } else {
+        element.textContent = content;
     }
 }
 
