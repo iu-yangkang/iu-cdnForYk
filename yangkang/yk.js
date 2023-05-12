@@ -1,9 +1,24 @@
 
 let message =
-    `
+`
 ******* 杨康的油猴工具类已经生效,请尽情享用 *******
-******* 版本号：yangkang2.4 *******
+******* 版本号：yangkang2.5 *******
 ******* GM_request函数 封装了油猴 的GM_xmlhttpRequest方法, 可以在当前页面执行跨域请求,支持异步调用，返回 Promise *******
+/**
+ * GM_request
+ * yangkang
+ * groupBy
+ * sleep
+ * addCdnByLayui
+ * loadCDNFile
+ * addButton
+ * addTable
+ * sortBy
+ * Axios_request
+ * openOnWeb
+ * 
+*/
+
 `
 console.log(message)
 /**
@@ -128,7 +143,7 @@ function yangkang(data) {
     `
 
     console.log(da)
-    
+
 }
 
 
@@ -139,7 +154,7 @@ function yangkang(data) {
  * @param {Array} sumKeys 需要计算总和的键的数组，默认为空数组
  * @returns {Array} 返回包含所有分组结果的数组
  */
-async function groupBy(array, keys, sumKeys = [],join) {
+async function groupBy(array, keys, sumKeys = [], join) {
     const grouped = {}; // 用于存储分组结果的对象
     for (const object of array) { // 遍历输入数组中的每个元素
         let key = ''; // 存储当前元素的键的变量
@@ -230,21 +245,21 @@ addCdnByLayui()
  * @param {*} filetype 文件类型
  */
 function loadCDNFile(filename, filetype) {
-  if (filetype == "js") { // 如果是加载 JS 文件
-    var fileref = document.createElement('script');
-    fileref.setAttribute("type", "text/javascript");
-    fileref.setAttribute("src", filename);
-  }
-  else if (filetype == "css") { // 如果是加载 CSS 文件
-    var fileref = document.createElement("link");
-    fileref.setAttribute("rel", "stylesheet");
-    fileref.setAttribute("type", "text/css");
-    fileref.setAttribute("href", filename);
-  }
+    if (filetype == "js") { // 如果是加载 JS 文件
+        var fileref = document.createElement('script');
+        fileref.setAttribute("type", "text/javascript");
+        fileref.setAttribute("src", filename);
+    }
+    else if (filetype == "css") { // 如果是加载 CSS 文件
+        var fileref = document.createElement("link");
+        fileref.setAttribute("rel", "stylesheet");
+        fileref.setAttribute("type", "text/css");
+        fileref.setAttribute("href", filename);
+    }
 
-  if (typeof fileref != "undefined") {
-    document.getElementsByTagName("head")[0].appendChild(fileref);
-  }
+    if (typeof fileref != "undefined") {
+        document.getElementsByTagName("head")[0].appendChild(fileref);
+    }
 }
 
 // loadCDNFile("https://code.jquery.com/jquery-3.6.0.min.js", "js");
@@ -389,11 +404,41 @@ async function Axios_request(method, url, { headers, params, data }) {
     return axios(config);
 }
 
-    //   // 使用示例：
-    //   request('get', '/api/users', { params: { limit: 10, offset: 0 } })
-    //     .then(response => console.log(response))
-    //     .catch(error => console.error(error));
+//   // 使用示例：
+//   request('get', '/api/users', { params: { limit: 10, offset: 0 } })
+//     .then(response => console.log(response))
+//     .catch(error => console.error(error));
 
-    //   request('post', '/api/users', { data: { name: 'John Doe', age: 30 }, headers: { 'Content-Type': 'application/json' } })
-    //     .then(response => console.log(response))
-    //     .catch(error => console.error(error));
+//   request('post', '/api/users', { data: { name: 'John Doe', age: 30 }, headers: { 'Content-Type': 'application/json' } })
+//     .then(response => console.log(response))
+//     .catch(error => console.error(error));
+
+
+/**
+* 
+* @param {*} title 标题
+* @param {*} content 任意html内容
+* @param {*} size 宽高数组
+* @param {*} callback 回调函数
+*/
+function openOnWeb(title, content, size, callback) {
+    layui.use(['layer'], function () {
+        var layer = layui.layer;
+        layer.open({
+            type: 1,
+            title: title,
+            area: size,
+            content: content,
+            btn: ['确认', '取消'],
+            yes: function (index, layero) {
+                if (typeof callback === 'function') {
+                    callback();
+                }
+                layer.close(index);
+            },
+            btn2: function (index, layero) {
+                layer.close(index);
+            }
+        });
+    });
+}
