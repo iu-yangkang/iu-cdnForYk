@@ -20,6 +20,16 @@ let message =
 */
 
 `
+
+let style = '#TManays{z-index:99999; position:absolute; left:0px; top:0px; width:170px; height:auto; border:0; margin:0;}' +
+'#TMul{position:fixed; left:-156px; width:140px; background-color:#000; opacity:0.8; border:3px solid #146e10; list-style:none; margin:0; padding:5px;}' +
+'#TMul li{margin:0; padding:3px;} ' +
+'#TMul li a{font-size:15px; margin:0; padding:3px; color:white;} ' +
+'#TMGobtn{position:fixed; left:0; top:100px;cursor:pointer;outline:none; width:70px; height:40px; border-width:2px 4px 2px 0px; border-color:#ffff00; background-color:#ffff00; border-style:solid; font:12px "微软雅黑"; color:#ff0000; margin:0; padding:0;} ' +
+'#TMbtn{position:fixed; left:0; cursor:pointer;outline:none; width:20px; height:40px; border-width:2px 4px 2px 0px; border-color:#ffff00; background-color:#ffff00; border-style:solid; font:12px "微软雅黑"; color:#aaa; margin:0; padding:0;}'
+
+
+
 console.log(message)
 /**
  * 封装GM_xmlhttpRequest方法
@@ -460,3 +470,40 @@ function openOnWeb(title, content, size, callback, isclose) {
         });
     });
 }
+
+
+
+    /**
+     * 页面悬浮按钮
+     */
+    function btnTg() {
+        var btn = document.getElementById("TMbtn");
+        var ul = document.getElementById("TMul");
+        if (btn.style.left === "" || parseInt(btn.style.left) < 10) {
+            btn.style.left = 156 + "px";
+            ul.style.left = 0;
+            btn.innerText = "◁";
+        } else {
+            btn.style.left = 0;
+            ul.style.left = -156 + "px";
+            btn.innerText = "▷";
+        }
+    }
+
+
+    /**
+     * 
+     * @param {*} li  li标签字符串
+     */
+    function flag(li) {
+        var div = document.createElement("div");
+        div.innerHTML = '<div id="TManays">' +
+            '<ul id="TMul">' +
+            li +
+            '</ul>' +
+            '<button id="TMbtn"> ▷</button>' +
+            '</div>';
+        document.body.appendChild(div);
+        document.querySelector("#TMbtn").addEventListener("click", btnTg, false);
+
+    }
