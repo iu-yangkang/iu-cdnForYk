@@ -2,7 +2,7 @@
 let message =
     `
 ******* 杨康的油猴工具类已经生效,请尽情享用 *******
-******* 版本号：yangkang2.6 *******
+******* 版本号：yangkang3.0 *******
 ******* GM_request函数 封装了油猴 的GM_xmlhttpRequest方法, 可以在当前页面执行跨域请求,支持异步调用，返回 Promise *******
 /**
  * GM_request
