@@ -2,7 +2,7 @@
 let message =
     `
 ******* 杨康的油猴工具类已经生效,请尽情享用 *******
-******* 版本号：yangkang3.0 *******
+******* 版本号：yangkang3.1 *******
 ******* GM_request函数 封装了油猴 的GM_xmlhttpRequest方法, 可以在当前页面执行跨域请求,支持异步调用，返回 Promise *******
 /**
  * GM_request
@@ -446,13 +446,14 @@ async function Axios_request(method, url, { headers, params, data }) {
 * @param {*} callback 回调函数
 * @param {*} isclose 布尔值，是否关闭当前页面
 */
-function openOnWeb(title, content, size, callback, isclose) {
+function openOnWeb(title, content, size, callback, isclose,maxmin) {
     layui.use(['layer'], function () {
         var layer = layui.layer;
         layer.open({
             type: 1,
             title: title,
             area: size,
+            maxmin:maxmin,
             content: content,
             btn: ['确认', '取消'],
             yes: function (index, layero) {
