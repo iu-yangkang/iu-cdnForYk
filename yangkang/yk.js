@@ -235,11 +235,11 @@ async function sleep(num) {
  */
 function addCdnByLayui() {
     var link = document.createElement('link');
-    link.href = "//unpkg.com/layui@2.6.8/dist/css/layui.css";
+    link.href = "https://cdn.bootcdn.net/ajax/libs/layui/2.8.9/css/layui.css";
     link.rel = 'stylesheet';
     document.getElementsByTagName('head')[0].appendChild(link);
     var script = document.createElement('script');
-    script.src = "//unpkg.com/layui@2.6.8/dist/layui.js";
+    script.src = "https://cdn.bootcdn.net/ajax/libs/layui/2.8.9/layui.js";
     document.getElementsByTagName('head')[0].appendChild(script);
     yangkang("layui@2.6.8 注入完成，可放心使用！")
 }
